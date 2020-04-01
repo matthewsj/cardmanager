@@ -1,0 +1,7 @@
+.PlayerList {
+  display: flex;
+}
+
+.Player {
+  flex: 1;
+}

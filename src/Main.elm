@@ -248,13 +248,12 @@ type alias LocalOriginMsg =
 
 view : SharedModel -> LocalModel -> Html (CloudModel.LocalOriginAction SharedMsg LocalMsg)
 view sharedModel localModel =
-    div []
-        (List.append
+    div [ class "Application" ]
+        [ div [ class "PlayerList" ]
             (List.map viewPlayer sharedModel)
-            [ div [ class "controls" ]
-                [ viewControls localModel ]
-            ]
-        )
+        , div [ class "controls" ]
+            [ viewControls localModel ]
+        ]
 
 
 viewControls : LocalModel -> Html LocalOriginMsg
