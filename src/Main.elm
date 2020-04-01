@@ -18,7 +18,7 @@ main =
         { sharedMsgEncoding =
             { decoder = decodeSharedMsg
             , encoder = encodeSharedMsg
-            , onDecodeError = \s -> NoOp
+            , onDecodeError = \_ -> NoOp
             }
         , application =
             { init = init

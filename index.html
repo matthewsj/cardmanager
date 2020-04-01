@@ -94,6 +94,87 @@ function A9(fun, a, b, c, d, e, f, g, h, i) {
 console.warn('Compiled in DEV mode. Follow the advice at https://elm-lang.org/0.19.1/optimize for better performance and smaller assets.');
 
 
+var _List_Nil_UNUSED = { $: 0 };
+var _List_Nil = { $: '[]' };
+
+function _List_Cons_UNUSED(hd, tl) { return { $: 1, a: hd, b: tl }; }
+function _List_Cons(hd, tl) { return { $: '::', a: hd, b: tl }; }
+
+
+var _List_cons = F2(_List_Cons);
+
+function _List_fromArray(arr)
+{
+	var out = _List_Nil;
+	for (var i = arr.length; i--; )
+	{
+		out = _List_Cons(arr[i], out);
+	}
+	return out;
+}
+
+function _List_toArray(xs)
+{
+	for (var out = []; xs.b; xs = xs.b) // WHILE_CONS
+	{
+		out.push(xs.a);
+	}
+	return out;
+}
+
+var _List_map2 = F3(function(f, xs, ys)
+{
+	for (var arr = []; xs.b && ys.b; xs = xs.b, ys = ys.b) // WHILE_CONSES
+	{
+		arr.push(A2(f, xs.a, ys.a));
+	}
+	return _List_fromArray(arr);
+});
+
+var _List_map3 = F4(function(f, xs, ys, zs)
+{
+	for (var arr = []; xs.b && ys.b && zs.b; xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
+	{
+		arr.push(A3(f, xs.a, ys.a, zs.a));
+	}
+	return _List_fromArray(arr);
+});
+
+var _List_map4 = F5(function(f, ws, xs, ys, zs)
+{
+	for (var arr = []; ws.b && xs.b && ys.b && zs.b; ws = ws.b, xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
+	{
+		arr.push(A4(f, ws.a, xs.a, ys.a, zs.a));
+	}
+	return _List_fromArray(arr);
+});
+
+var _List_map5 = F6(function(f, vs, ws, xs, ys, zs)
+{
+	for (var arr = []; vs.b && ws.b && xs.b && ys.b && zs.b; vs = vs.b, ws = ws.b, xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
+	{
+		arr.push(A5(f, vs.a, ws.a, xs.a, ys.a, zs.a));
+	}
+	return _List_fromArray(arr);
+});
+
+var _List_sortBy = F2(function(f, xs)
+{
+	return _List_fromArray(_List_toArray(xs).sort(function(a, b) {
+		return _Utils_cmp(f(a), f(b));
+	}));
+});
+
+var _List_sortWith = F2(function(f, xs)
+{
+	return _List_fromArray(_List_toArray(xs).sort(function(a, b) {
+		var ord = A2(f, a, b);
+		return ord === $elm$core$Basics$EQ ? 0 : ord === $elm$core$Basics$LT ? -1 : 1;
+	}));
+});
+
+
+
 var _JsArray_empty = [];
 
 function _JsArray_singleton(value)
@@ -723,87 +804,6 @@ function _Utils_ap(xs, ys)
 	}
 	return root;
 }
-
-
-
-var _List_Nil_UNUSED = { $: 0 };
-var _List_Nil = { $: '[]' };
-
-function _List_Cons_UNUSED(hd, tl) { return { $: 1, a: hd, b: tl }; }
-function _List_Cons(hd, tl) { return { $: '::', a: hd, b: tl }; }
-
-
-var _List_cons = F2(_List_Cons);
-
-function _List_fromArray(arr)
-{
-	var out = _List_Nil;
-	for (var i = arr.length; i--; )
-	{
-		out = _List_Cons(arr[i], out);
-	}
-	return out;
-}
-
-function _List_toArray(xs)
-{
-	for (var out = []; xs.b; xs = xs.b) // WHILE_CONS
-	{
-		out.push(xs.a);
-	}
-	return out;
-}
-
-var _List_map2 = F3(function(f, xs, ys)
-{
-	for (var arr = []; xs.b && ys.b; xs = xs.b, ys = ys.b) // WHILE_CONSES
-	{
-		arr.push(A2(f, xs.a, ys.a));
-	}
-	return _List_fromArray(arr);
-});
-
-var _List_map3 = F4(function(f, xs, ys, zs)
-{
-	for (var arr = []; xs.b && ys.b && zs.b; xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
-	{
-		arr.push(A3(f, xs.a, ys.a, zs.a));
-	}
-	return _List_fromArray(arr);
-});
-
-var _List_map4 = F5(function(f, ws, xs, ys, zs)
-{
-	for (var arr = []; ws.b && xs.b && ys.b && zs.b; ws = ws.b, xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
-	{
-		arr.push(A4(f, ws.a, xs.a, ys.a, zs.a));
-	}
-	return _List_fromArray(arr);
-});
-
-var _List_map5 = F6(function(f, vs, ws, xs, ys, zs)
-{
-	for (var arr = []; vs.b && ws.b && xs.b && ys.b && zs.b; vs = vs.b, ws = ws.b, xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
-	{
-		arr.push(A5(f, vs.a, ws.a, xs.a, ys.a, zs.a));
-	}
-	return _List_fromArray(arr);
-});
-
-var _List_sortBy = F2(function(f, xs)
-{
-	return _List_fromArray(_List_toArray(xs).sort(function(a, b) {
-		return _Utils_cmp(f(a), f(b));
-	}));
-});
-
-var _List_sortWith = F2(function(f, xs)
-{
-	return _List_fromArray(_List_toArray(xs).sort(function(a, b) {
-		var ord = A2(f, a, b);
-		return ord === $elm$core$Basics$EQ ? 0 : ord === $elm$core$Basics$LT ? -1 : 1;
-	}));
-});
 
 
 
@@ -4369,8 +4369,8 @@ function _Browser_load(url)
 		}
 	}));
 }
-var $author$project$Main$NoOp = {$: 'NoOp'};
-var $author$project$CloudModel$ReapplyAllPending = {$: 'ReapplyAllPending'};
+var $elm$core$Basics$EQ = {$: 'EQ'};
+var $elm$core$Basics$LT = {$: 'LT'};
 var $elm$core$List$cons = _List_cons;
 var $elm$core$Elm$JsArray$foldr = _JsArray_foldr;
 var $elm$core$Array$foldr = F3(
@@ -4448,23 +4448,10 @@ var $elm$core$Set$toList = function (_v0) {
 	var dict = _v0.a;
 	return $elm$core$Dict$keys(dict);
 };
-var $elm$core$Basics$EQ = {$: 'EQ'};
 var $elm$core$Basics$GT = {$: 'GT'};
-var $elm$core$Basics$LT = {$: 'LT'};
-var $author$project$Main$AddCardToPlayer = F2(
-	function (a, b) {
-		return {$: 'AddCardToPlayer', a: a, b: b};
-	});
-var $author$project$Main$AddPlayer = function (a) {
-	return {$: 'AddPlayer', a: a};
-};
-var $author$project$Main$RemoveCardFromPlayer = F2(
-	function (a, b) {
-		return {$: 'RemoveCardFromPlayer', a: a, b: b};
-	});
-var $author$project$Main$RemovePlayer = function (a) {
-	return {$: 'RemovePlayer', a: a};
-};
+var $author$project$Main$Displaying = {$: 'Displaying'};
+var $author$project$Main$initLocalModel = $author$project$Main$Displaying;
+var $author$project$Main$initSharedModel = _List_Nil;
 var $elm$core$Result$Err = function (a) {
 	return {$: 'Err', a: a};
 };
@@ -4860,40 +4847,13 @@ var $elm$core$Result$isOk = function (result) {
 		return false;
 	}
 };
-var $elm$json$Json$Decode$field = _Json_decodeField;
-var $elm$json$Json$Decode$int = _Json_decodeInt;
+var $elm$core$Platform$Cmd$batch = _Platform_batch;
+var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
+var $author$project$Main$init = function (_v0) {
+	return _Utils_Tuple3($author$project$Main$initSharedModel, $author$project$Main$initLocalModel, $elm$core$Platform$Cmd$none);
+};
 var $elm$json$Json$Decode$map = _Json_map1;
 var $elm$json$Json$Decode$map2 = _Json_map2;
-var $elm$json$Json$Decode$oneOf = _Json_oneOf;
-var $elm$json$Json$Decode$string = _Json_decodeString;
-var $author$project$Main$decodeSharedMsg = $elm$json$Json$Decode$oneOf(
-	_List_fromArray(
-		[
-			A2(
-			$elm$json$Json$Decode$field,
-			'AddPlayer',
-			A2($elm$json$Json$Decode$map, $author$project$Main$AddPlayer, $elm$json$Json$Decode$string)),
-			A2(
-			$elm$json$Json$Decode$field,
-			'RemovePlayer',
-			A2($elm$json$Json$Decode$map, $author$project$Main$RemovePlayer, $elm$json$Json$Decode$string)),
-			A2(
-			$elm$json$Json$Decode$field,
-			'AddCardToPlayer',
-			A3(
-				$elm$json$Json$Decode$map2,
-				$author$project$Main$AddCardToPlayer,
-				A2($elm$json$Json$Decode$field, 'playerId', $elm$json$Json$Decode$string),
-				A2($elm$json$Json$Decode$field, 'cardText', $elm$json$Json$Decode$string))),
-			A2(
-			$elm$json$Json$Decode$field,
-			'RemoveCardFromPlayer',
-			A3(
-				$elm$json$Json$Decode$map2,
-				$author$project$Main$RemoveCardFromPlayer,
-				A2($elm$json$Json$Decode$field, 'playerId', $elm$json$Json$Decode$string),
-				A2($elm$json$Json$Decode$field, 'position', $elm$json$Json$Decode$int)))
-		]));
 var $elm$json$Json$Decode$succeed = _Json_succeed;
 var $elm$virtual_dom$VirtualDom$toHandlerInt = function (handler) {
 	switch (handler.$) {
@@ -5206,26 +5166,6 @@ var $elm$core$Task$perform = F2(
 				A2($elm$core$Task$map, toMessage, task)));
 	});
 var $elm$browser$Browser$element = _Browser_element;
-var $author$project$CloudModel$LocalOrigin = function (a) {
-	return {$: 'LocalOrigin', a: a};
-};
-var $elm$core$Platform$Cmd$batch = _Platform_batch;
-var $elm$core$Basics$composeR = F3(
-	function (f, g, x) {
-		return g(
-			f(x));
-	});
-var $elm$core$List$filter = F2(
-	function (isGood, list) {
-		return A3(
-			$elm$core$List$foldr,
-			F2(
-				function (x, xs) {
-					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
-				}),
-			_List_Nil,
-			list);
-	});
 var $author$project$CloudModel$localAction = function (localMsg) {
 	return {
 		localMsg: $elm$core$Maybe$Just(localMsg),
@@ -5243,91 +5183,6 @@ var $elm$core$Maybe$map = F2(
 		}
 	});
 var $elm$core$Platform$Cmd$map = _Platform_map;
-var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
-var $elm$core$List$append = F2(
-	function (xs, ys) {
-		if (!ys.b) {
-			return xs;
-		} else {
-			return A3($elm$core$List$foldr, $elm$core$List$cons, ys, xs);
-		}
-	});
-var $elm$json$Json$Encode$int = _Json_wrap;
-var $elm$json$Json$Encode$object = function (pairs) {
-	return _Json_wrap(
-		A3(
-			$elm$core$List$foldl,
-			F2(
-				function (_v0, obj) {
-					var k = _v0.a;
-					var v = _v0.b;
-					return A3(_Json_addField, k, v, obj);
-				}),
-			_Json_emptyObject(_Utils_Tuple0),
-			pairs));
-};
-var $author$project$CloudModel$proposeEvent = F5(
-	function (proposal, sharedMsgEncoder, sharedMsg, latestKnownEventId, clientEventId) {
-		return proposal(
-			$elm$json$Json$Encode$object(
-				_List_fromArray(
-					[
-						_Utils_Tuple2(
-						'sharedMsg',
-						sharedMsgEncoder(sharedMsg)),
-						_Utils_Tuple2(
-						'latestKnownEventId',
-						$elm$json$Json$Encode$int(latestKnownEventId)),
-						_Utils_Tuple2(
-						'clientEventId',
-						$elm$json$Json$Encode$int(clientEventId))
-					])));
-	});
-var $author$project$CloudModel$updateSharedLocalOrigin = F4(
-	function (proposal, sharedMsgEncoder, msg, model) {
-		var newEvent = {id: 0, msg: msg};
-		var _v0 = model.pendingEvents;
-		if (!_v0.b) {
-			return _Utils_Tuple2(
-				_Utils_update(
-					model,
-					{
-						pendingEvents: _List_fromArray(
-							[newEvent])
-					}),
-				A5($author$project$CloudModel$proposeEvent, proposal, sharedMsgEncoder, msg, model.latestKnownEventId, 0));
-		} else {
-			return _Utils_Tuple2(
-				_Utils_update(
-					model,
-					{
-						pendingEvents: A2(
-							$elm$core$List$append,
-							model.pendingEvents,
-							_List_fromArray(
-								[newEvent]))
-					}),
-				$elm$core$Platform$Cmd$none);
-		}
-	});
-var $author$project$CloudModel$updateSharedRemoteModelOrigin = F3(
-	function (coreUpdateFn, event, model) {
-		return _Utils_update(
-			model,
-			{
-				latestKnownEventId: event.id,
-				latestKnownSharedModel: A2(coreUpdateFn, event.msg, model.latestKnownSharedModel)
-			});
-	});
-var $elm$core$List$head = function (list) {
-	if (list.b) {
-		var x = list.a;
-		var xs = list.b;
-		return $elm$core$Maybe$Just(x);
-	} else {
-		return $elm$core$Maybe$Nothing;
-	}
-};
 var $elm$core$Maybe$withDefault = F2(
 	function (_default, maybe) {
 		if (maybe.$ === 'Just') {
@@ -5337,440 +5192,68 @@ var $elm$core$Maybe$withDefault = F2(
 			return _default;
 		}
 	});
-var $author$project$CloudModel$proposeNextPendingEvent = F4(
-	function (pendingEvents, proposal, sharedMsgEncoder, latestKnownEventId) {
-		return A2(
+var $author$project$CloudModel$localOnlyUpdate = F4(
+	function (updateSharedFn, updateLocalFn, msg, model) {
+		var newSharedModel = A2(
 			$elm$core$Maybe$withDefault,
-			$elm$core$Platform$Cmd$none,
+			model.sharedModel,
 			A2(
 				$elm$core$Maybe$map,
-				function (nextEventToSend) {
-					return A5($author$project$CloudModel$proposeEvent, proposal, sharedMsgEncoder, nextEventToSend.msg, latestKnownEventId, nextEventToSend.id);
+				function (s) {
+					return A2(updateSharedFn, s, model.sharedModel);
 				},
-				$elm$core$List$head(pendingEvents)));
-	});
-var $author$project$CloudModel$applyRejectionStrategy = F6(
-	function (rejectionStrategy, pendingEvents, proposal, sharedMsgEncoder, clientEventId, caughtUpModel) {
-		var resultingPendingEvents = function () {
-			switch (rejectionStrategy.$) {
-				case 'DropAllPending':
-					return _List_Nil;
-				case 'ReapplyAllPending':
-					return pendingEvents;
-				default:
-					var pendingEventsHandler = rejectionStrategy.a;
-					return A2(pendingEventsHandler, pendingEvents, caughtUpModel);
-			}
-		}();
-		return _Utils_Tuple2(
-			_Utils_update(
-				caughtUpModel,
-				{pendingEvents: resultingPendingEvents}),
-			A4($author$project$CloudModel$proposeNextPendingEvent, resultingPendingEvents, proposal, sharedMsgEncoder, caughtUpModel.latestKnownEventId));
-	});
-var $author$project$CloudModel$updateWithControlMsg = F6(
-	function (proposal, sharedMsgEncoder, coreUpdateFn, rejectionStrategy, controlMsg, model) {
-		if (controlMsg.$ === 'Accept') {
-			var eventId = controlMsg.a;
-			var clientEventId = controlMsg.b;
-			var _v1 = model.pendingEvents;
-			if (_v1.b) {
-				var acceptedEvent = _v1.a;
-				var pendingEvents = _v1.b;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{
-							latestKnownEventId: eventId,
-							latestKnownSharedModel: A2(coreUpdateFn, acceptedEvent.msg, model.latestKnownSharedModel),
-							pendingEvents: pendingEvents
-						}),
-					A4($author$project$CloudModel$proposeNextPendingEvent, pendingEvents, proposal, sharedMsgEncoder, eventId));
-			} else {
-				return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
-			}
-		} else {
-			var clientId = controlMsg.a;
-			var unfilteredNewerEvents = controlMsg.b;
-			var newerEvents = A2(
-				$elm$core$List$filter,
-				function (event) {
-					return _Utils_cmp(event.id, model.latestKnownEventId) > 0;
-				},
-				unfilteredNewerEvents);
-			var latest = $elm$core$List$head(
-				$elm$core$List$reverse(newerEvents));
-			var caughtUpModel = _Utils_update(
-				model,
-				{
-					latestKnownEventId: A2(
-						$elm$core$Maybe$withDefault,
-						model.latestKnownEventId,
-						A2(
-							$elm$core$Maybe$map,
-							function ($) {
-								return $.id;
-							},
-							latest)),
-					latestKnownSharedModel: A3(
-						$elm$core$List$foldl,
-						coreUpdateFn,
-						model.latestKnownSharedModel,
-						A2(
-							$elm$core$List$map,
-							function ($) {
-								return $.msg;
-							},
-							newerEvents)),
-					pendingEvents: _List_Nil
-				});
-			return A6($author$project$CloudModel$applyRejectionStrategy, rejectionStrategy, model.pendingEvents, proposal, sharedMsgEncoder, clientId + 1, caughtUpModel);
-		}
-	});
-var $author$project$CloudModel$buildCloudUpdate = F7(
-	function (proposal, sharedMsgEncoder, coreUpdateFn, updateLocalFn, rejectionStrategy, msg, model) {
-		switch (msg.$) {
-			case 'LocalOrigin':
-				var localMsg = msg.a.localMsg;
-				var proposedEvent = msg.a.proposedEvent;
-				var _v1 = A2(
-					$elm$core$Maybe$withDefault,
-					_Utils_Tuple2(model.sharedModelInfo, $elm$core$Platform$Cmd$none),
-					A2(
-						$elm$core$Maybe$map,
-						function (s) {
-							return A4($author$project$CloudModel$updateSharedLocalOrigin, proposal, sharedMsgEncoder, s, model.sharedModelInfo);
-						},
-						proposedEvent));
-				var newSharedModelState = _v1.a;
-				var sharedCmd = _v1.b;
-				var _v2 = A2(
-					$elm$core$Maybe$withDefault,
-					_Utils_Tuple2(model.localModel, $elm$core$Platform$Cmd$none),
-					A2(
-						$elm$core$Maybe$map,
-						function (l) {
-							return A2(updateLocalFn, l, model.localModel);
-						},
-						localMsg));
-				var newLocalModel = _v2.a;
-				var localCmd = _v2.b;
-				return _Utils_Tuple2(
-					{localModel: newLocalModel, sharedModelInfo: newSharedModelState},
-					$elm$core$Platform$Cmd$batch(
-						_List_fromArray(
-							[
-								A2(
-								$elm$core$Platform$Cmd$map,
-								A2($elm$core$Basics$composeR, $author$project$CloudModel$localAction, $author$project$CloudModel$LocalOrigin),
-								localCmd),
-								sharedCmd
-							])));
-			case 'RemoteOrigin':
-				var events = msg.a;
-				var newEvents = A2(
-					$elm$core$List$filter,
-					function (event) {
-						return _Utils_cmp(event.id, model.sharedModelInfo.latestKnownEventId) > 0;
-					},
-					events);
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{
-							sharedModelInfo: A3(
-								$elm$core$List$foldl,
-								$author$project$CloudModel$updateSharedRemoteModelOrigin(coreUpdateFn),
-								model.sharedModelInfo,
-								newEvents)
-						}),
-					$elm$core$Platform$Cmd$none);
-			default:
-				var controlMsg = msg.a;
-				var _v3 = A6($author$project$CloudModel$updateWithControlMsg, proposal, sharedMsgEncoder, coreUpdateFn, rejectionStrategy, controlMsg, model.sharedModelInfo);
-				var sharedModelInfo = _v3.a;
-				var cmd = _v3.b;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{sharedModelInfo: sharedModelInfo}),
-					cmd);
-		}
-	});
-var $elm$core$Basics$composeL = F3(
-	function (g, f, x) {
-		return g(
-			f(x));
-	});
-var $author$project$CloudModel$initSharedModelState = function (initLatestKnownSharedModel) {
-	return {latestKnownEventId: 0, latestKnownSharedModel: initLatestKnownSharedModel, pendingEvents: _List_Nil};
-};
-var $author$project$CloudModel$buildInit = F2(
-	function (clientInit, flags) {
-		var _v0 = clientInit(flags);
-		var initialClientSharedModel = _v0.a;
-		var initialClientLocalModel = _v0.b;
-		var cmd = _v0.c;
-		return _Utils_Tuple2(
-			{
-				localModel: initialClientLocalModel,
-				sharedModelInfo: $author$project$CloudModel$initSharedModelState(initialClientSharedModel)
-			},
+				msg.proposedEvent));
+		var _v0 = A2(
+			$elm$core$Maybe$withDefault,
+			_Utils_Tuple2(model.localModel, $elm$core$Platform$Cmd$none),
 			A2(
-				$elm$core$Platform$Cmd$map,
-				A2($elm$core$Basics$composeL, $author$project$CloudModel$LocalOrigin, $author$project$CloudModel$localAction),
-				cmd));
+				$elm$core$Maybe$map,
+				function (l) {
+					return A2(updateLocalFn, l, model.localModel);
+				},
+				msg.localMsg));
+		var newLocalModel = _v0.a;
+		var localCmd = _v0.b;
+		return _Utils_Tuple2(
+			{localModel: newLocalModel, sharedModel: newSharedModel},
+			A2($elm$core$Platform$Cmd$map, $author$project$CloudModel$localAction, localCmd));
 	});
-var $author$project$CloudModel$ControlMsg = function (a) {
-	return {$: 'ControlMsg', a: a};
-};
-var $author$project$CloudModel$RemoteOrigin = function (a) {
-	return {$: 'RemoteOrigin', a: a};
+var $elm$core$Platform$Sub$map = _Platform_map;
+var $author$project$CloudModel$local = function (_v0) {
+	var init = _v0.init;
+	var subscriptions = _v0.subscriptions;
+	var updateCloud = _v0.updateCloud;
+	var updateLocal = _v0.updateLocal;
+	var view = _v0.view;
+	return $elm$browser$Browser$element(
+		{
+			init: function (flags) {
+				var _v1 = init(flags);
+				var initialClientSharedModel = _v1.a;
+				var initialClientLocalModel = _v1.b;
+				var cmd = _v1.c;
+				return _Utils_Tuple2(
+					{localModel: initialClientLocalModel, sharedModel: initialClientSharedModel},
+					A2($elm$core$Platform$Cmd$map, $author$project$CloudModel$localAction, cmd));
+			},
+			subscriptions: function (_v2) {
+				var sharedModel = _v2.sharedModel;
+				var localModel = _v2.localModel;
+				return A2(
+					$elm$core$Platform$Sub$map,
+					$author$project$CloudModel$localAction,
+					A2(subscriptions, sharedModel, localModel));
+			},
+			update: A2($author$project$CloudModel$localOnlyUpdate, updateCloud, updateLocal),
+			view: function (_v3) {
+				var sharedModel = _v3.sharedModel;
+				var localModel = _v3.localModel;
+				return A2(view, sharedModel, localModel);
+			}
+		});
 };
 var $elm$core$Platform$Sub$batch = _Platform_batch;
-var $author$project$CloudModel$Event = F2(
-	function (msg, id) {
-		return {id: id, msg: msg};
-	});
-var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom = $elm$json$Json$Decode$map2($elm$core$Basics$apR);
-var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required = F3(
-	function (key, valDecoder, decoder) {
-		return A2(
-			$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom,
-			A2($elm$json$Json$Decode$field, key, valDecoder),
-			decoder);
-	});
-var $author$project$CloudModel$decodeEvent = function (decodeSharedMsg) {
-	return A3(
-		$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-		'id',
-		$elm$json$Json$Decode$int,
-		A3(
-			$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-			'msg',
-			decodeSharedMsg,
-			$elm$json$Json$Decode$succeed($author$project$CloudModel$Event)));
-};
-var $elm$json$Json$Decode$decodeValue = _Json_run;
-var $author$project$CloudModel$decodeOrFail = F3(
-	function (onError, decoder, json) {
-		var _v0 = A2($elm$json$Json$Decode$decodeValue, decoder, json);
-		if (_v0.$ === 'Ok') {
-			var msg = _v0.a;
-			return msg;
-		} else {
-			var error = _v0.a;
-			return onError(
-				$elm$json$Json$Decode$errorToString(error));
-		}
-	});
-var $author$project$CloudModel$Accept = F2(
-	function (a, b) {
-		return {$: 'Accept', a: a, b: b};
-	});
-var $author$project$CloudModel$decodeAccept = A3(
-	$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-	'clientEventId',
-	$elm$json$Json$Decode$int,
-	A3(
-		$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-		'eventId',
-		$elm$json$Json$Decode$int,
-		$elm$json$Json$Decode$succeed($author$project$CloudModel$Accept)));
-var $author$project$CloudModel$Reject = F2(
-	function (a, b) {
-		return {$: 'Reject', a: a, b: b};
-	});
-var $elm$json$Json$Decode$list = _Json_decodeList;
-var $author$project$CloudModel$decodeReject = function (decodeSharedMsg) {
-	return A3(
-		$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-		'missingEvents',
-		$elm$json$Json$Decode$list(
-			$author$project$CloudModel$decodeEvent(decodeSharedMsg)),
-		A3(
-			$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-			'clientEventId',
-			$elm$json$Json$Decode$int,
-			$elm$json$Json$Decode$succeed($author$project$CloudModel$Reject)));
-};
-var $author$project$CloudModel$decodeProposalResponse = function (decodeSharedMsg) {
-	return $elm$json$Json$Decode$oneOf(
-		_List_fromArray(
-			[
-				A2($elm$json$Json$Decode$field, 'accept', $author$project$CloudModel$decodeAccept),
-				A2(
-				$elm$json$Json$Decode$field,
-				'reject',
-				$author$project$CloudModel$decodeReject(decodeSharedMsg))
-			]));
-};
-var $elm$core$Platform$Sub$map = _Platform_map;
-var $author$project$CloudModel$buildSubscriptions = F6(
-	function (proposalResponse, receiveEvents, sharedMsgDecoder, onDecodeErrorFn, subscriptionFn, _v0) {
-		var sharedModelInfo = _v0.sharedModelInfo;
-		var localModel = _v0.localModel;
-		var localSubscriptions = A2(subscriptionFn, sharedModelInfo.latestKnownSharedModel, localModel);
-		var handleDecodeFailure = function (errorMessage) {
-			return $author$project$CloudModel$LocalOrigin(
-				$author$project$CloudModel$localAction(
-					onDecodeErrorFn(errorMessage)));
-		};
-		return $elm$core$Platform$Sub$batch(
-			_List_fromArray(
-				[
-					proposalResponse(
-					A2(
-						$author$project$CloudModel$decodeOrFail,
-						handleDecodeFailure,
-						A2(
-							$elm$json$Json$Decode$map,
-							$author$project$CloudModel$ControlMsg,
-							$author$project$CloudModel$decodeProposalResponse(sharedMsgDecoder)))),
-					receiveEvents(
-					A2(
-						$author$project$CloudModel$decodeOrFail,
-						handleDecodeFailure,
-						A2(
-							$elm$json$Json$Decode$map,
-							$author$project$CloudModel$RemoteOrigin,
-							$elm$json$Json$Decode$list(
-								$author$project$CloudModel$decodeEvent(sharedMsgDecoder))))),
-					A2(
-					$elm$core$Platform$Sub$map,
-					A2($elm$core$Basics$composeL, $author$project$CloudModel$LocalOrigin, $author$project$CloudModel$localAction),
-					localSubscriptions)
-				]));
-	});
-var $elm$virtual_dom$VirtualDom$map = _VirtualDom_map;
-var $elm$html$Html$map = $elm$virtual_dom$VirtualDom$map;
-var $author$project$CloudModel$predictedSharedModel = F2(
-	function (coreUpdateFn, model) {
-		return A3(
-			$elm$core$List$foldl,
-			coreUpdateFn,
-			model.latestKnownSharedModel,
-			A2(
-				$elm$core$List$map,
-				function ($) {
-					return $.msg;
-				},
-				model.pendingEvents));
-	});
-var $author$project$CloudModel$constructCloudView = F3(
-	function (updateFn, viewFn, model) {
-		return A2(
-			$elm$html$Html$map,
-			$author$project$CloudModel$LocalOrigin,
-			A2(
-				viewFn,
-				A2($author$project$CloudModel$predictedSharedModel, updateFn, model.sharedModelInfo),
-				model.localModel));
-	});
-var $author$project$CloudModel$wrapAll = function (_v0) {
-	var application = _v0.application;
-	var options = _v0.options;
-	var ports = _v0.ports;
-	var sharedMsgEncoding = _v0.sharedMsgEncoding;
-	var _v1 = application;
-	var init = _v1.init;
-	var subscriptions = _v1.subscriptions;
-	var updateCloud = _v1.updateCloud;
-	var updateLocal = _v1.updateLocal;
-	var view = _v1.view;
-	var _v2 = options;
-	var rejectionStrategy = _v2.rejectionStrategy;
-	var _v3 = ports;
-	var proposal = _v3.proposal;
-	var proposalResponse = _v3.proposalResponse;
-	var receiveEvents = _v3.receiveEvents;
-	var _v4 = sharedMsgEncoding;
-	var decoder = _v4.decoder;
-	var encoder = _v4.encoder;
-	var onDecodeError = _v4.onDecodeError;
-	return {
-		init: $author$project$CloudModel$buildInit(init),
-		subscriptions: A5($author$project$CloudModel$buildSubscriptions, proposalResponse, receiveEvents, decoder, onDecodeError, subscriptions),
-		update: A5($author$project$CloudModel$buildCloudUpdate, proposal, encoder, updateCloud, updateLocal, rejectionStrategy),
-		view: A2($author$project$CloudModel$constructCloudView, updateCloud, view)
-	};
-};
-var $author$project$CloudModel$element = function (cloudModelConfig) {
-	return $elm$browser$Browser$element(
-		$author$project$CloudModel$wrapAll(cloudModelConfig));
-};
-var $elm$json$Json$Encode$string = _Json_wrap;
-var $author$project$Main$encodeSharedMsg = function (sharedModelMsg) {
-	switch (sharedModelMsg.$) {
-		case 'AddPlayer':
-			var playerId = sharedModelMsg.a;
-			return $elm$json$Json$Encode$object(
-				_List_fromArray(
-					[
-						_Utils_Tuple2(
-						'AddPlayer',
-						$elm$json$Json$Encode$string(playerId))
-					]));
-		case 'RemovePlayer':
-			var playerId = sharedModelMsg.a;
-			return $elm$json$Json$Encode$object(
-				_List_fromArray(
-					[
-						_Utils_Tuple2(
-						'RemovePlayer',
-						$elm$json$Json$Encode$string(playerId))
-					]));
-		case 'AddCardToPlayer':
-			var playerId = sharedModelMsg.a;
-			var cardText = sharedModelMsg.b;
-			return $elm$json$Json$Encode$object(
-				_List_fromArray(
-					[
-						_Utils_Tuple2(
-						'AddCardToPlayer',
-						$elm$json$Json$Encode$object(
-							_List_fromArray(
-								[
-									_Utils_Tuple2(
-									'playerId',
-									$elm$json$Json$Encode$string(playerId)),
-									_Utils_Tuple2(
-									'cardText',
-									$elm$json$Json$Encode$string(cardText))
-								])))
-					]));
-		default:
-			var playerId = sharedModelMsg.a;
-			var position = sharedModelMsg.b;
-			return $elm$json$Json$Encode$object(
-				_List_fromArray(
-					[
-						_Utils_Tuple2(
-						'RemoveCardFromPlayer',
-						$elm$json$Json$Encode$object(
-							_List_fromArray(
-								[
-									_Utils_Tuple2(
-									'playerId',
-									$elm$json$Json$Encode$string(playerId)),
-									_Utils_Tuple2(
-									'position',
-									$elm$json$Json$Encode$int(position))
-								])))
-					]));
-	}
-};
-var $author$project$Main$Displaying = {$: 'Displaying'};
-var $author$project$Main$initLocalModel = $author$project$Main$Displaying;
-var $author$project$Main$initSharedModel = _List_Nil;
-var $author$project$Main$init = function (_v0) {
-	return _Utils_Tuple3($author$project$Main$initSharedModel, $author$project$Main$initLocalModel, $elm$core$Platform$Cmd$none);
-};
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
-var $author$project$Main$proposal = _Platform_outgoingPort('proposal', $elm$core$Basics$identity);
-var $elm$json$Json$Decode$value = _Json_decodeValue;
-var $author$project$Main$proposalResponse = _Platform_incomingPort('proposalResponse', $elm$json$Json$Decode$value);
-var $author$project$Main$receiveEvents = _Platform_incomingPort('receiveEvents', $elm$json$Json$Decode$value);
 var $author$project$Main$updateLocal = F2(
 	function (msg, model) {
 		if (msg.$ === 'SetMode') {
@@ -5783,6 +5266,14 @@ var $author$project$Main$updateLocal = F2(
 var $author$project$Main$Player = F2(
 	function (name, cards) {
 		return {cards: cards, name: name};
+	});
+var $elm$core$List$append = F2(
+	function (xs, ys) {
+		if (!ys.b) {
+			return xs;
+		} else {
+			return A3($elm$core$List$foldr, $elm$core$List$cons, ys, xs);
+		}
 	});
 var $author$project$Main$addLast = F2(
 	function (item, list) {
@@ -5812,6 +5303,17 @@ var $elm$core$List$any = F2(
 				}
 			}
 		}
+	});
+var $elm$core$List$filter = F2(
+	function (isGood, list) {
+		return A3(
+			$elm$core$List$foldr,
+			F2(
+				function (x, xs) {
+					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
+				}),
+			_List_Nil,
+			list);
 	});
 var $elm$core$Basics$neq = _Utils_notEqual;
 var $elm$core$List$drop = F2(
@@ -6050,6 +5552,7 @@ var $author$project$Main$updateShared = F2(
 					});
 		}
 	});
+var $elm$json$Json$Encode$string = _Json_wrap;
 var $elm$html$Html$Attributes$stringProperty = F2(
 	function (key, string) {
 		return A2(
@@ -6059,6 +5562,13 @@ var $elm$html$Html$Attributes$stringProperty = F2(
 	});
 var $elm$html$Html$Attributes$class = $elm$html$Html$Attributes$stringProperty('className');
 var $elm$html$Html$div = _VirtualDom_node('div');
+var $author$project$Main$AddCardToPlayer = F2(
+	function (a, b) {
+		return {$: 'AddCardToPlayer', a: a, b: b};
+	});
+var $author$project$Main$AddPlayer = function (a) {
+	return {$: 'AddPlayer', a: a};
+};
 var $author$project$Main$AddingCard = function (a) {
 	return {$: 'AddingCard', a: a};
 };
@@ -6108,10 +5618,12 @@ var $elm$html$Html$Events$stopPropagationOn = F2(
 			event,
 			$elm$virtual_dom$VirtualDom$MayStopPropagation(decoder));
 	});
+var $elm$json$Json$Decode$field = _Json_decodeField;
 var $elm$json$Json$Decode$at = F2(
 	function (fields, decoder) {
 		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
 	});
+var $elm$json$Json$Decode$string = _Json_decodeString;
 var $elm$html$Html$Events$targetValue = A2(
 	$elm$json$Json$Decode$at,
 	_List_fromArray(
@@ -6149,7 +5661,7 @@ var $author$project$Main$viewControls = function (localModel) {
 					]),
 				_List_fromArray(
 					[
-						$elm$html$Html$text('Send')
+						$elm$html$Html$text('Add player')
 					]))
 			]));
 	switch (localModel.$) {
@@ -6249,6 +5761,10 @@ var $author$project$Main$viewControls = function (localModel) {
 					]));
 	}
 };
+var $author$project$Main$RemoveCardFromPlayer = F2(
+	function (a, b) {
+		return {$: 'RemoveCardFromPlayer', a: a, b: b};
+	});
 var $elm$html$Html$h2 = _VirtualDom_node('h2');
 var $elm$html$Html$li = _VirtualDom_node('li');
 var $author$project$CloudModel$sharedAction = function (sharedMsg) {
@@ -6327,45 +5843,41 @@ var $author$project$Main$view = F2(
 	function (sharedModel, localModel) {
 		return A2(
 			$elm$html$Html$div,
-			_List_Nil,
-			A2(
-				$elm$core$List$append,
-				A2($elm$core$List$map, $author$project$Main$viewPlayer, sharedModel),
-				_List_fromArray(
-					[
-						A2(
-						$elm$html$Html$div,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$class('controls')
-							]),
-						_List_fromArray(
-							[
-								$author$project$Main$viewControls(localModel)
-							]))
-					])));
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('Application')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('PlayerList')
+						]),
+					A2($elm$core$List$map, $author$project$Main$viewPlayer, sharedModel)),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('controls')
+						]),
+					_List_fromArray(
+						[
+							$author$project$Main$viewControls(localModel)
+						]))
+				]));
 	});
-var $author$project$Main$main = $author$project$CloudModel$element(
+var $author$project$Main$main = $author$project$CloudModel$local(
 	{
-		application: {
-			init: $author$project$Main$init,
-			subscriptions: F2(
-				function (_v0, _v1) {
-					return $elm$core$Platform$Sub$none;
-				}),
-			updateCloud: $author$project$Main$updateShared,
-			updateLocal: $author$project$Main$updateLocal,
-			view: $author$project$Main$view
-		},
-		options: {rejectionStrategy: $author$project$CloudModel$ReapplyAllPending},
-		ports: {proposal: $author$project$Main$proposal, proposalResponse: $author$project$Main$proposalResponse, receiveEvents: $author$project$Main$receiveEvents},
-		sharedMsgEncoding: {
-			decoder: $author$project$Main$decodeSharedMsg,
-			encoder: $author$project$Main$encodeSharedMsg,
-			onDecodeError: function (s) {
-				return $author$project$Main$NoOp;
-			}
-		}
+		init: $author$project$Main$init,
+		subscriptions: F2(
+			function (_v0, _v1) {
+				return $elm$core$Platform$Sub$none;
+			}),
+		updateCloud: $author$project$Main$updateShared,
+		updateLocal: $author$project$Main$updateLocal,
+		view: $author$project$Main$view
 	});
 _Platform_export({'Main':{'init':$author$project$Main$main(
 	$elm$json$Json$Decode$succeed(_Utils_Tuple0))(0)}});}(this));
